@@ -11,44 +11,62 @@ by Jeffery Myers is marked with CC0 1.0. To view a copy of this license, visit h
 
 #include "resource_dir.h"	// utility header for SearchAndSetResourceDir
 
+#include <iostream>
+
+using namespace std;
+
+class Ball {
+	public:
+		float x, y;
+		int speed_x, speed_y;
+		int radius;
+	
+		void Draw() {
+			DrawCircle(x, y, radius, WHITE);
+		}
+
+		void Update() {
+			x += speed_x;
+			y += speed_y;
+		}
+};
+
+Ball ball;
+
 int main ()
 {
-	// Tell the window to use vsync and work on high DPI displays
-	SetConfigFlags(FLAG_VSYNC_HINT | FLAG_WINDOW_HIGHDPI);
+	cout << "Starting the game" << endl;
+	const int screen_width = 1280;
+	const int screen_height = 800;
+	InitWindow(screen_width, screen_height, "My Pong Game!");
+	SetTargetFPS(60);
 
-	// Create the window and OpenGL context
-	InitWindow(800, 600, "Hello Raylib");
+	ball.radius = 20;
+	ball.x = screen_width/2;
+	ball.y = screen_height/2;
+	ball.speed_x = 7;
+	ball.speed_y = 7;
 
-	// Utility function from resource_dir.h to find the resources folder and set it as the current working directory so we can load from it
-	SearchAndSetResourceDir("resources");
-
-	// Load a texture from the resources directory
-	Texture wabbit = LoadTexture("wabbit_alpha.png");
-	
-	// game loop
-	while (!WindowShouldClose())		// run the loop until the user presses ESCAPE or presses the Close button on the window
+	while (WindowShouldClose() == false)
 	{
-		// drawing
+		/* code */
 		BeginDrawing();
 
-		// Setup the back buffer for drawing (clear color and depth buffers)
+		// Updating
+		ball.Update();
+
+		// Drawing
 		ClearBackground(BLACK);
+		DrawLine(screen_width/2, 0, screen_width/2, screen_height, WHITE);
+		ball.Draw();
+		DrawRectangle(10, screen_height/2-60, 25, 120, WHITE);
+		DrawRectangle(screen_width - 35, screen_height/2-60, 25, 120, WHITE);
 
-		// draw some text using the default font
-		DrawText("Hello Raylib", 200,200,20,WHITE);
-
-		// draw our texture to the screen
-		DrawTexture(wabbit, 400, 200, WHITE);
-		
-		// end the frame and get ready for the next one  (display frame, poll input, etc...)
 		EndDrawing();
 	}
+	
+	
 
-	// cleanup
-	// unload our texture so it can be cleaned up
-	UnloadTexture(wabbit);
-
-	// destroy the window and cleanup the OpenGL context
 	CloseWindow();
 	return 0;
 }
